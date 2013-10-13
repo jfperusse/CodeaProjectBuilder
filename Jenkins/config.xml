@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>This project will build exported &lt;i&gt;Codea&lt;/i&gt; projects automatically.&lt;br&gt;&#xd;
+&lt;br&gt;&#xd;
+It also patches the &lt;i&gt;AppDelegate.mm&lt;/i&gt; file to support&#xd;
+&lt;a href=&quot;http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html&quot;&gt;&#xd;
+plug-and-play addons&lt;/a&gt; which are added to the project automatically.&lt;br&gt;&#xd;
+&lt;br&gt;&#xd;
+Author : Jean-François Pérusse (See &lt;a href=&quot;http://codeatricks.blogspot.ca/&quot;&gt;CodeaTricks&lt;/a&gt; on Blogspot)</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>REBUILD_ALL</name>
+          <description>If set, all projects found will be rebuilt even if no change has been detected.</description>
+          <defaultValue>false</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.BooleanParameterDefinition>
+          <name>USE_ADDONS</name>
+          <description>If you are not using plug-and-play addons, you can turn this off to skip AppDelegate.mm patching and addons integration to your Xcode project.</description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PROJECTS_FOLDER</name>
+          <description>Path to your exported Codea projects (Dropbox, Google Drive, etc.)</description>
+          <defaultValue>/Users/jfperusse/Dropbox/CodeaExports</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FORCE_BUILD_PROJECT</name>
+          <description>Name of a project to build even if no changes are detected.</description>
+          <defaultValue></defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.filesystem_scm.FSSCM" plugin="filesystem_scm@1.20">
+    <path>/Users/jfperusse/Dropbox/CodeaExports</path>
+    <clearWorkspace>false</clearWorkspace>
+    <copyHidden>false</copyHidden>
+    <filterEnabled>false</filterEnabled>
+    <includeFilter>true</includeFilter>
+    <filters>
+      <string>*.zip</string>
+    </filters>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>* * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>python $WORKSPACE/CodeaProjectBuilder_PrepareBuild.py
+</command>
+    </hudson.tasks.Shell>
+    <EnvInjectBuilder plugin="envinject@1.88">
+      <info>
+        <propertiesFilePath>codeaprojectbuilder.properties</propertiesFilePath>
+      </info>
+    </EnvInjectBuilder>
+    <hudson.tasks.Shell>
+      <command>python $WORKSPACE/CodeaProjectBuilder_ModifyBuild.py
+</command>
+    </hudson.tasks.Shell>
+    <au.com.rayh.XCodeBuilder plugin="xcode-plugin@1.4">
+      <cleanBeforeBuild>false</cleanBeforeBuild>
+      <cleanTestReports>false</cleanTestReports>
+      <configuration>Release</configuration>
+      <target></target>
+      <sdk></sdk>
+      <symRoot></symRoot>
+      <configurationBuildDir></configurationBuildDir>
+      <xcodeProjectPath>CurrentBuild</xcodeProjectPath>
+      <xcodeProjectFile></xcodeProjectFile>
+      <xcodebuildArguments>PROVISIONING_PROFILE=$UUID</xcodebuildArguments>
+      <xcodeSchema></xcodeSchema>
+      <xcodeWorkspaceFile></xcodeWorkspaceFile>
+      <embeddedProfileFile>../developer.mobileprovision</embeddedProfileFile>
+      <cfBundleVersionValue>$BUNDLE_VERSION</cfBundleVersionValue>
+      <cfBundleShortVersionStringValue>$BUNDLE_VERSION</cfBundleShortVersionStringValue>
+      <buildIpa>true</buildIpa>
+      <generateArchive>false</generateArchive>
+      <unlockKeychain>false</unlockKeychain>
+      <keychainName>none (specify one below)</keychainName>
+      <keychainPath></keychainPath>
+      <keychainPwd></keychainPwd>
+      <codeSigningIdentity>iPhone Developer</codeSigningIdentity>
+      <allowFailingBuildResults>false</allowFailingBuildResults>
+      <ipaName>CodeaProject</ipaName>
+      <ipaOutputDirectory></ipaOutputDirectory>
+      <provideApplicationVersion>true</provideApplicationVersion>
+    </au.com.rayh.XCodeBuilder>
+    <hudson.tasks.Shell>
+      <command>python $WORKSPACE/CodeaProjectBuilder_CopyIPA.py</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <testflight.TestflightRecorder plugin="testflight@1.3.9">
+      <tokenPairName>Famille</tokenPairName>
+      <notifyTeam>true</notifyTeam>
+      <buildNotes>$BUILD_NOTES</buildNotes>
+      <appendChangelog>false</appendChangelog>
+      <filePath>$TARGET_FOLDER/$PROJECT_TO_BUILD.ipa</filePath>
+      <dsymPath></dsymPath>
+      <lists>$DISTRIBUTION_LISTS</lists>
+      <replace>true</replace>
+      <proxyPort>0</proxyPort>
+      <debug>false</debug>
+    </testflight.TestflightRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>
