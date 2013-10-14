@@ -92,3 +92,8 @@ Usage
 - Wait a few minutes, you should receive an e-mail from TestFlight once your build is ready.
   - If the build fails, you can look at the Console Output in Jenkins.
 - Install your project using TestFlight on your iOS device.
+
+Resources
+---------
+
+Video presentation of the CodeaProjectBuilder : http://www.youtube.com/watch?v=miS08qAhswY
