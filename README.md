@@ -59,6 +59,7 @@ Here is an example:
 
 ```
   --[[
+  DISTRIBUTION_LISTS=DeveloperOnly
   BUNDLE_VERSION=1.1
   BUILD_NOTES=Slower clear of the screen.
   ADDONS=CommonAddon,MusicAddon
@@ -69,6 +70,9 @@ Here is an example:
 
 The supported options are:
 
+- DISTRIBUTION_LISTS
+  - Distribution lists to use for TestFlight (which users will have access to the build and get notified).
+  - Default value : *empty* (you will have to give permissions manually on TestFlight).
 - BUNDLE_VERSION
   - Version to use in Xcode for CFBundleVersion and CFBundleShortVersionString.
   - Default value : 1.0
