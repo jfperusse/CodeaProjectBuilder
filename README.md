@@ -59,17 +59,21 @@ Here is an example:
 
 ```
   --[[
+  BUNDLE_ID=com.username.projectname
   DISTRIBUTION_LISTS=DeveloperOnly
   BUNDLE_VERSION=1.1
   BUILD_NOTES=Slower clear of the screen.
   ADDONS=CommonAddon,MusicAddon
   -- We can also have additional comments
   RESOURCES=MenuMusic.mp3,GameMusic.mp3
+  FRAMEWORKS=GameKit
   --]]
 ```
 
 The supported options are:
 
+- BUNDLE_ID
+  - Allows you to override the default bundle identifier (CFBundleIdentifier) set by Codea.
 - DISTRIBUTION_LISTS
   - Distribution lists to use for TestFlight (which users will have access to the build and get notified).
   - Default value : *empty* (you will have to give permissions manually on TestFlight).
@@ -80,10 +84,12 @@ The supported options are:
   - Build notes to send to TestFlight.
   - Default value : *empty*
 - ADDONS
-  - List of [plug-and-play add-ons](http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html) to include in your Xcode project.
+  - Comma-separated list of [plug-and-play add-ons](http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html) to include in your Xcode project.
 - RESOURCES
-  - List of resources to include in your Xcode project (e.g. mp3 files)
+  - Comma-separated list of resources to include in your Xcode project (e.g. mp3 files)
   - If this option is missing, all resources are added.
+- FRAMEWORKS
+  - Comma-separated list of SDK Frameworks to include in your Xcode project (e.g. GameKit)
 
 Usage
 -----
