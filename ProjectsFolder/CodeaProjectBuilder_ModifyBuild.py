@@ -9,6 +9,7 @@ projectToBuild = os.environ['PROJECT_TO_BUILD']
 addons = os.getenv('ADDONS', '<ALL>')
 resources = os.getenv('RESOURCES', '<ALL>')
 frameworks = os.getenv('FRAMEWORKS', '')
+weakFrameworks = os.getenv('WEAK_FRAMEWORKS', '')
 bundleId = os.getenv('BUNDLE_ID', '')
 
 def AddFilesToProject():
@@ -17,7 +18,7 @@ def AddFilesToProject():
     from mod_pbxproj import XcodeProject
     projectPath = os.path.join(buildFolder, projectToBuild + ".xcodeproj", "project.pbxproj")
     project = XcodeProject.Load(projectPath)
-    project_group = project.get_or_create_group('CameraMask')
+    project_group = project.get_or_create_group(projectToBuild)
     
     if addonsFolder and useAddons == 'true' and addons:
         if addons == '<All>':
@@ -50,14 +51,23 @@ def AddFilesToProject():
                     print("  Adding " + basename + " to the Xcode project...")
                     project.add_file(f, resources_group, ignore_unknown_type=True)
 
+    frameworks_group = project.get_or_create_group('Frameworks')
+
     if frameworks:
         print("\nAdding frameworks...")
-        frameworks_group = project.get_or_create_group('Frameworks')
         frameworksList = frameworks.split(',')
         [x.strip() for x in frameworksList]
         for framework in frameworksList:
             print("  Adding the '" + framework + "' framework...")
             project.add_file('System/Library/Frameworks/' + framework + '.framework', frameworks_group, tree='SDKROOT')
+
+    if weakFrameworks:
+        print("\nAdding weak frameworks...")
+        weakFrameworksList = weakFrameworks.split(',')
+        [x.strip() for x in weakFrameworksList]
+        for weakFramework in weakFrameworksList:
+            print("  Adding the '" + weakFramework + "' as a weak framework...")
+            project.add_file('System/Library/Frameworks/' + weakFramework + '.framework', frameworks_group, tree='SDKROOT', weak=True)
 
     if project.modified:
         project.backup()
