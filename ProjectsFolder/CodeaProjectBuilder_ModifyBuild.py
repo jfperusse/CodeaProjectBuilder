@@ -8,6 +8,8 @@ buildFolder = os.path.join(workspace, "CurrentBuild")
 projectToBuild = os.environ['PROJECT_TO_BUILD']
 addons = os.getenv('ADDONS', '<ALL>')
 resources = os.getenv('RESOURCES', '<ALL>')
+frameworks = os.getenv('FRAMEWORKS', '')
+bundleId = os.getenv('BUNDLE_ID', '')
 
 def AddFilesToProject():
     # Add files from the ADDONS_FOLDER to the Xcode project
@@ -48,6 +50,15 @@ def AddFilesToProject():
                     print("  Adding " + basename + " to the Xcode project...")
                     project.add_file(f, resources_group, ignore_unknown_type=True)
 
+    if frameworks:
+        print("\nAdding frameworks...")
+        frameworks_group = project.get_or_create_group('Frameworks')
+        frameworksList = frameworks.split(',')
+        [x.strip() for x in frameworksList]
+        for framework in frameworksList:
+            print("  Adding the '" + framework + "' framework...")
+            project.add_file('System/Library/Frameworks/' + framework + '.framework', frameworks_group, tree='SDKROOT')
+
     if project.modified:
         project.backup()
         project.save()
@@ -64,10 +75,25 @@ def ApplyAddonsPatch():
         if insertAfter in line:
             print patchLine
 
+def ChangeBundleIdentifier():
+    print("\nUpdating the bundle identifier to '" + bundleId + "'...")
+    plistPath = os.path.join(buildFolder, projectToBuild, projectToBuild + "-Info.plist")
+    skipLine = False
+    for line in fileinput.input(plistPath, inplace=1):
+        if skipLine:
+            skipLine = False
+            continue
+        print line,
+        if "CFBundleIdentifier" in line:
+            skipLine = True
+            print "\t<string>" + bundleId + "</string>"
+
 def ModifyProject():
     if useAddons == 'true':
         ApplyAddonsPatch()
     AddFilesToProject()
+    if bundleId:
+        ChangeBundleIdentifier()
     print("\n")
 
 ModifyProject()
