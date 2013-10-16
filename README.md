@@ -3,7 +3,7 @@ CodeaProjectBuilder
 
 The CodeaProjectBuilder is a set of python scripts as well as a Jenkins' job configuration which can be used to create a **Codea build machine** for your exported Codea projects.
 
-The build machine will look for changes in your file system (Dropbox, Google Drive, etc.) and automatically build your project. It can also integrate [plug-and-play add-ons](http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html), resources like mp3 music, and upload your build to TestFlight so that you can do everything directly on your iPad.
+The build machine will look for changes in your file system (Dropbox, Google Drive, etc.) and automatically build your project. It can also integrate [plug-and-play add-ons](https://github.com/jfperusse/CodeaAddons), resources like mp3 music, and upload your build to TestFlight so that you can do everything directly on your iPad.
 
 Requirements
 ------------
@@ -47,7 +47,7 @@ Installation
 - Copy the files found here to your **PROJECTS_FOLDER** (mobileprovisionParser and python files).
 - Copy your mobileprovision to your **PROJECTS_FOLDER** and rename it to "developer.mobileprovision".
   - This allows you to easily update the provisionning provile used by simply updating the version in **PROJECTS_FOLDER**.
-- Put your [plug-and-play add-ons](http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html) under **PROJECTS_FOLDER/Addons**.
+- Put your [plug-and-play add-ons](https://github.com/jfperusse/CodeaAddons) under **PROJECTS_FOLDER/Addons**.
 - Put your resource files under **PROJECTS_FOLDER/Resources**.
 
 Codea Project Configuration
@@ -84,7 +84,7 @@ The supported options are:
   - Build notes to send to TestFlight.
   - Default value : *empty*
 - ADDONS
-  - Comma-separated list of [plug-and-play add-ons](http://codeatricks.blogspot.ca/2013/07/codea-addons-auto-registration.html) to include in your Xcode project.
+  - Comma-separated list of [plug-and-play add-ons](https://github.com/jfperusse/CodeaAddons) to include in your Xcode project.
 - RESOURCES
   - Comma-separated list of resources to include in your Xcode project (e.g. mp3 files)
   - If this option is missing, all resources are added.
