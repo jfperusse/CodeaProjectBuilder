@@ -41,7 +41,7 @@ Installation
 - Go to **Manage Jenkins** and click **Reload Configuration from Disk**.
 - Setup your Testflight tokens under Jenkins' **global configuration**
 - Update the Jenkins' project's **configuration**.
-  - Set **PROJECTS_FOLDER** with the absolute path to your exported Codea projects (e.g. Dropbox, Google Drive).
+  - Set **PROJECTS_FOLDER** with the absolute path to your exported Codea projects on your PC (e.g. Dropbox, Google Drive).
   - Update the Source Code Management section with the same path.
   - Choose your TestFlight *Token Pair*.
 - Copy the files found here to your **PROJECTS_FOLDER** (mobileprovisionParser and python files).
