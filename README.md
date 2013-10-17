@@ -36,6 +36,8 @@ Installation
   - Xcode integration
   - Environment Injector Plugin (EnvInject)
   - Testflight plugin
+  - conditional-buildstep
+  - Flexible Publish Plugin
 - In Jenkins, create a new "free-style software project" called CodeaProjectBuilder.
 - Go to `~/.jenkins/jobs/CodeaProjectBuilder` and overwrite `config.xml` with the one found here.
 - Go to **Manage Jenkins** and click **Reload Configuration from Disk**.
