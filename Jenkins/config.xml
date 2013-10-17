@@ -29,7 +29,7 @@ Author : Jean-François Pérusse (See &lt;a href=&quot;http://codeatricks.blogsp
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>FORCE_BUILD_PROJECT</name>
-          <description>Name of a project to build even if no changes are detected.</description>
+          <description>If set, the project specified will be built even if no change is detected.</description>
           <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
@@ -66,55 +66,80 @@ Author : Jean-François Pérusse (See &lt;a href=&quot;http://codeatricks.blogsp
         <propertiesFilePath>codeaprojectbuilder.properties</propertiesFilePath>
       </info>
     </EnvInjectBuilder>
-    <hudson.tasks.Shell>
-      <command>python $WORKSPACE/CodeaProjectBuilder_ModifyBuild.py
-</command>
-    </hudson.tasks.Shell>
-    <au.com.rayh.XCodeBuilder plugin="xcode-plugin@1.4">
-      <cleanBeforeBuild>false</cleanBeforeBuild>
-      <cleanTestReports>false</cleanTestReports>
-      <configuration>Release</configuration>
-      <target></target>
-      <sdk></sdk>
-      <symRoot></symRoot>
-      <configurationBuildDir></configurationBuildDir>
-      <xcodeProjectPath>CurrentBuild</xcodeProjectPath>
-      <xcodeProjectFile></xcodeProjectFile>
-      <xcodebuildArguments>PROVISIONING_PROFILE=$UUID</xcodebuildArguments>
-      <xcodeSchema></xcodeSchema>
-      <xcodeWorkspaceFile></xcodeWorkspaceFile>
-      <embeddedProfileFile>../developer.mobileprovision</embeddedProfileFile>
-      <cfBundleVersionValue>$BUNDLE_VERSION</cfBundleVersionValue>
-      <cfBundleShortVersionStringValue>$BUNDLE_VERSION</cfBundleShortVersionStringValue>
-      <buildIpa>true</buildIpa>
-      <generateArchive>false</generateArchive>
-      <unlockKeychain>false</unlockKeychain>
-      <keychainName>none (specify one below)</keychainName>
-      <keychainPath></keychainPath>
-      <keychainPwd></keychainPwd>
+    <org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder plugin="conditional-buildstep@1.3.1">
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+      <runCondition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition">
+          <arg1>$PROJECT_TO_BUILD</arg1>
+          <arg2></arg2>
+          <ignoreCase>true</ignoreCase>
+        </condition>
+      </runCondition>
+      <conditionalbuilders>
+        <hudson.tasks.Shell>
+          <command>python $WORKSPACE/CodeaProjectBuilder_ModifyBuild.py</command>
+        </hudson.tasks.Shell>
+        <au.com.rayh.XCodeBuilder plugin="xcode-plugin@1.4">
+          <cleanBeforeBuild>false</cleanBeforeBuild>
+          <cleanTestReports>false</cleanTestReports>
+          <configuration>Release</configuration>
+          <target></target>
+          <sdk></sdk>
+          <symRoot></symRoot>
+          <configurationBuildDir></configurationBuildDir>
+          <xcodeProjectPath>CurrentBuild</xcodeProjectPath>
+          <xcodeProjectFile></xcodeProjectFile>
+          <xcodebuildArguments>PROVISIONING_PROFILE=$UUID</xcodebuildArguments>
+          <xcodeSchema></xcodeSchema>
+          <xcodeWorkspaceFile></xcodeWorkspaceFile>
+          <embeddedProfileFile>../developer.mobileprovision</embeddedProfileFile>
+          <cfBundleVersionValue>$BUNDLE_VERSION</cfBundleVersionValue>
+          <cfBundleShortVersionStringValue>$BUNDLE_VERSION</cfBundleShortVersionStringValue>
+          <buildIpa>true</buildIpa>
+          <generateArchive>false</generateArchive>
+          <unlockKeychain>false</unlockKeychain>
+          <keychainName>none (specify one below)</keychainName>
+          <keychainPath></keychainPath>
+          <keychainPwd></keychainPwd>
       <codeSigningIdentity>iPhone Developer</codeSigningIdentity>
-      <allowFailingBuildResults>false</allowFailingBuildResults>
-      <ipaName>CodeaProject</ipaName>
-      <ipaOutputDirectory></ipaOutputDirectory>
-      <provideApplicationVersion>true</provideApplicationVersion>
-    </au.com.rayh.XCodeBuilder>
-    <hudson.tasks.Shell>
-      <command>python $WORKSPACE/CodeaProjectBuilder_CopyIPA.py</command>
-    </hudson.tasks.Shell>
+          <allowFailingBuildResults>false</allowFailingBuildResults>
+          <ipaName>CodeaProject</ipaName>
+          <ipaOutputDirectory></ipaOutputDirectory>
+          <provideApplicationVersion>true</provideApplicationVersion>
+        </au.com.rayh.XCodeBuilder>
+        <hudson.tasks.Shell>
+          <command>python $WORKSPACE/CodeaProjectBuilder_CopyIPA.py</command>
+        </hudson.tasks.Shell>
+      </conditionalbuilders>
+    </org.jenkinsci.plugins.conditionalbuildstep.ConditionalBuilder>
   </builders>
   <publishers>
-    <testflight.TestflightRecorder plugin="testflight@1.3.9">
-      <tokenPairName>Famille</tokenPairName>
-      <notifyTeam>true</notifyTeam>
-      <buildNotes>$BUILD_NOTES</buildNotes>
-      <appendChangelog>false</appendChangelog>
-      <filePath>$TARGET_FOLDER/$PROJECT_TO_BUILD.ipa</filePath>
-      <dsymPath></dsymPath>
-      <lists>$DISTRIBUTION_LISTS</lists>
-      <replace>true</replace>
-      <proxyPort>0</proxyPort>
-      <debug>false</debug>
-    </testflight.TestflightRecorder>
+    <org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher plugin="flexible-publish@0.12">
+      <publishers>
+        <org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher>
+          <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
+            <condition class="org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition">
+              <arg1>$PROJECT_TO_BUILD</arg1>
+              <arg2></arg2>
+              <ignoreCase>true</ignoreCase>
+            </condition>
+          </condition>
+          <publisher class="testflight.TestflightRecorder" plugin="testflight@1.3.9">
+            <tokenPairName></tokenPairName>
+            <notifyTeam>true</notifyTeam>
+            <buildNotes>$BUILD_NOTES</buildNotes>
+            <appendChangelog>false</appendChangelog>
+            <filePath>$TARGET_FOLDER/$PROJECT_TO_BUILD.ipa</filePath>
+            <dsymPath></dsymPath>
+            <lists>$DISTRIBUTION_LISTS</lists>
+            <replace>true</replace>
+            <proxyPort>0</proxyPort>
+            <debug>false</debug>
+          </publisher>
+          <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+        </org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher>
+      </publishers>
+    </org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher>
   </publishers>
   <buildWrappers/>
 </project>
