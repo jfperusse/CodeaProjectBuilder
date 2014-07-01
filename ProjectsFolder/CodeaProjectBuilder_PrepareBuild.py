@@ -51,6 +51,7 @@ def SaveVariables():
         config = ""
         with open(configPath, 'r') as configFile:
             for i, line in enumerate(configFile):
+                print("    " + line)
                 if not line.startswith('--'):
                     config = config + line
         file.write(config)
@@ -100,11 +101,11 @@ def LookForBuilds():
 
     if buildReadyCount > 0:
         PrepareBuild(buildSource, buildWorking)
-        SaveVariables()
         print("\n")
-        sys.exit(0)
+    else:
+        print("\nNothing to build\n")
         
-    print("\nNothing to build\n")
-    sys.exit(1)
+    SaveVariables()
+    sys.exit(0)
             
 LookForBuilds()
