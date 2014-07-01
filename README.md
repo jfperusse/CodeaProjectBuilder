@@ -105,3 +105,8 @@ Resources
 ---------
 
 Video presentation of the CodeaProjectBuilder : http://www.youtube.com/watch?v=miS08qAhswY
+
+More info
+---------
+
+If the project's description does not show properly under Jenkins, make sure to update to the latest version of Jenkins, and use the "Raw HTML" Markup Formatter under Manage Jenkins, Configure Global Security page.
