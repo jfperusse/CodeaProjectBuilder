@@ -69,6 +69,7 @@ Here is an example:
   -- We can also have additional comments
   RESOURCES=MenuMusic.mp3,GameMusic.mp3
   FRAMEWORKS=GameKit
+  MOBILE_PROVISION=Custom.mobileprovision
   --]]
 ```
 
@@ -92,7 +93,10 @@ The supported options are:
   - If this option is missing, all resources are added.
 - FRAMEWORKS
   - Comma-separated list of SDK Frameworks to include in your Xcode project (e.g. GameKit)
-
+- MOBILE_PROVISION
+  - Allows you to override the mobileprovision file to use.
+  - Default value : developer.mobileprovision
+  
 Usage
 -----
 

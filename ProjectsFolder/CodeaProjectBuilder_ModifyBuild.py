@@ -10,6 +10,7 @@ addons = os.getenv('ADDONS', '<ALL>')
 resources = os.getenv('RESOURCES', '<ALL>')
 frameworks = os.getenv('FRAMEWORKS', '')
 weakFrameworks = os.getenv('WEAK_FRAMEWORKS', '')
+mobileProvision = os.getenv('MOBILE_PROVISION', 'developer.mobileprovision')
 bundleId = os.getenv('BUNDLE_ID', '')
 
 def AddFilesToProject():
@@ -99,6 +100,14 @@ def ChangeBundleIdentifier():
             print "\t<string>" + bundleId + "</string>"
 
 def ModifyProject():
+    print("\nInstalling '" + mobileProvision + "'...")
+    pathToParser = os.path.join(workspace, "mobileprovisionParser")
+    pathToMobileProvision = os.path.join(workspace, mobileProvision)
+    p = subprocess.Popen([pathToParser, "-f", pathToMobileProvision, "-o", "uuid"], shell=False, stdout=subprocess.PIPE)
+    uuid = p.stdout.read().strip()
+    print("  uuid : " + uuid + "\n")
+    shutil.copyfile(pathToMobileProvision, os.path.join(os.path.expanduser("~"), "Library/MobileDevice/Provisioning Profiles/" + uuid + ".mobileprovision"))
+
     if useAddons == 'true':
         ApplyAddonsPatch()
     AddFilesToProject()

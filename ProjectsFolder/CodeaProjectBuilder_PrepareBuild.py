@@ -7,7 +7,6 @@ extractFolder = os.path.join(workspace, "ExtractedFiles")
 rebuildAll = os.environ['REBUILD_ALL']
 buildId = os.environ['BUILD_ID']
 forceBuildProject = os.getenv('FORCE_BUILD_PROJECT', '')
-mobileProvision = os.getenv('MOBILE_PROVISION', '')
 projectToBuild = ""
 uuid = ""
 
@@ -70,14 +69,6 @@ def LookForBuilds():
     
     if not os.path.isdir(workingFolder):
         os.mkdir(workingFolder)
-
-    print("\nInstalling developer.mobileprovision...")
-    pathToParser = os.path.join(workspace, "mobileprovisionParser")
-    pathToMobileProvision = os.path.join(workspace, "developer.mobileprovision")
-    p = subprocess.Popen([pathToParser, "-f", pathToMobileProvision, "-o", "uuid"], shell=False, stdout=subprocess.PIPE)
-    uuid = p.stdout.read().strip()
-    print("  uuid : " + uuid + "\n")
-    shutil.copyfile(pathToMobileProvision, os.path.join(os.path.expanduser("~"), "Library/MobileDevice/Provisioning Profiles/" + uuid + ".mobileprovision"))
 
     buildReadyCount = 0
     buildSource = ""
