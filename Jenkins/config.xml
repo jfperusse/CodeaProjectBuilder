@@ -89,7 +89,7 @@ Author : Jean-François Pérusse (See &lt;a href=&quot;http://codeatricks.blogsp
           <configurationBuildDir></configurationBuildDir>
           <xcodeProjectPath>CurrentBuild</xcodeProjectPath>
           <xcodeProjectFile></xcodeProjectFile>
-          <xcodebuildArguments>PROVISIONING_PROFILE=$UUID</xcodebuildArguments>
+          <xcodebuildArguments>&quot;PROVISIONING_PROFILE=$UUID&quot; &quot;CODE_SIGN_RESOURCE_RULES_PATH=$(SDKROOT)/ResourceRules.plist&quot;</xcodebuildArguments>
           <xcodeSchema></xcodeSchema>
           <xcodeWorkspaceFile></xcodeWorkspaceFile>
           <embeddedProfileFile>../$MOBILE_PROVISION</embeddedProfileFile>

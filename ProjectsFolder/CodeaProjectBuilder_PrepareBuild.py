@@ -56,6 +56,8 @@ def SaveVariables():
         file.write(config)
         if "BUNDLE_VERSION" not in config:
             file.write("BUNDLE_VERSION=1.0\n")
+        if "MOBILE_PROVISION" not in config:
+            file.write("MOBILE_PROVISION=developer.mobileprovision\n")
     else:
         file.write("BUNDLE_VERSION=1.0\n")
 
